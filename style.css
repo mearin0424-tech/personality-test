@@ -22,10 +22,11 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* --- ★追加★ スタート画面 --- */
+/* --- ★変更★ スタート画面 --- */
 #start-screen {
     text-align: center;
     padding: 20px 0;
+    display: block; /* スタート画面は最初から表示 */
 }
 #start-screen h1 {
     font-family: 'Playfair Display', serif;
@@ -50,11 +51,12 @@ body {
     line-height: 1.8;
     margin-bottom: 40px;
 }
+/* --- ★変更★ スタートボタンのデザイン修正 --- */
 #start-btn {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #FF69B4, #6A4C9C);
+    background: linear-gradient(135deg, #f78bb8 0%, #9f85ff 100%); /* グラデーション変更 */
     color: #fff;
-    padding: 14px 40px; /* 横幅を広めに */
+    padding: 14px 40px;
     border: none;
     border-radius: 50px;
     font-size: 1.3em;
@@ -63,9 +65,12 @@ body {
     box-shadow: 0 5px 20px rgba(106, 76, 156, 0.3);
     transition: all 0.3s ease-in-out;
 }
-#start-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(106, 76, 156, 0.4);
+#start-btn:hover:not(:disabled) {
+    transform: translateY(-5px) scale(1.05); /* ホバーで浮き上がる */
+    box-shadow: 0 10px 25px rgba(106, 76, 156, 0.5);
+}
+#start-btn:active:not(:disabled) {
+    transform: translateY(-2px) scale(0.98); /* クリックで沈む */
 }
 #start-btn:disabled {
     background: #ccc;
@@ -78,7 +83,7 @@ body {
 
 /* --- ★変更★ 診断フォーム (初期非表示) --- */
 #shindan-form {
-    display: none;
+    display: none; /* ★重要★ ここが none になっているか確認 */
 }
 
 
@@ -146,7 +151,7 @@ body {
 }
 #submit-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(106, 76, 156, 0.4); }
 
-/* --- 結果表示エリア (初期非表示) --- */
+/* --- ★変更★ 結果表示エリア (初期非表示) --- */
 #result {
     margin-top: 40px;
     padding: 30px;
@@ -154,7 +159,7 @@ body {
     border: 2px solid #e0d6ff;
     border-radius: 15px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    display: none;
+    display: none; /* ★重要★ ここが none になっているか確認 */
 }
 #result h2 { margin-top: 0; color: #6A4C9C; font-size: 1.8em; text-align: center; font-family: 'Playfair Display', serif; }
 #result h3 { font-family: 'Poppins', sans-serif; color: #FF69B4; font-size: 1.5em; text-align: center; margin-top: 10px; margin-bottom: 25px; }
@@ -171,19 +176,15 @@ body {
 .share-btn:hover { transform: translateY(-2px); opacity: 0.9; }
 #share-x { background-color: #000000; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); }
 #share-line { background-color: #00B900; box-shadow: 0 3px 10px rgba(0, 185, 0, 0.3); }
-
-/* --- ローディング (フォーム内) --- */
 #loading { text-align: center; font-size: 1.2em; padding: 30px; color: #6A4C9C; background-color: #f7f3ff; border-radius: 8px; border: 1px dashed #c5b5e6; }
 
 /* --- レスポンシブデザイン --- */
 @media (max-width: 768px) {
     #shindan-app { margin: 20px auto; padding: 20px 25px; }
-    /* ★変更★ スタート画面 */
     #start-screen h1 { font-size: 2.2em; }
     #start-screen .subtitle { font-size: 1em; }
     #start-screen p.description { font-size: 1em; }
     #start-btn { font-size: 1.1em; }
-    /* ★ここまで★ */
     .question p { font-size: 1.05em; }
     .likert-scale label:nth-child(1) span,
     .likert-scale label:nth-child(5) span { width: 38px; height: 38px; line-height: 38px; }
