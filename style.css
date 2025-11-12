@@ -1,5 +1,5 @@
 /* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Poppins:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Playfair+Display:wght@700&display=swap');
 
 /* --- 基本設定 --- */
 body {
@@ -24,12 +24,22 @@ body {
 
 /* --- タイトル --- */
 h1 {
-    font-family: 'Poppins', sans-serif; /* かっこいいフォント */
+    font-family: 'Playfair Display', serif;
     text-align: center;
-    color: #6A4C9C; /* 濃い紫 */
-    margin-bottom: 30px;
-    font-size: 2.5em;
+    color: #6A4C9C;
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 3em;
     font-weight: 700;
+}
+.subtitle {
+    font-family: 'Noto Sans JP', sans-serif;
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #9279b8;
+    margin-top: 0;
+    margin-bottom: 40px;
     letter-spacing: 1px;
 }
 
@@ -39,20 +49,21 @@ h1 {
     background-color: rgba(255, 255, 255, 0.7);
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 15px rgba(0, 0,0, 0.05);
 }
 .question p {
     font-weight: 700;
     font-size: 1.15em;
     color: #3f364f;
     margin-bottom: 20px;
-    text-align: center;
+    text-align: left;
 }
 
 /* --- 5段階評価 (Likert Scale) --- */
 .likert-scale {
     display: flex;
     justify-content: space-around;
+    align-items: center;
     padding: 10px 0;
 }
 .likert-scale label {
@@ -63,49 +74,47 @@ h1 {
 .likert-scale label:hover {
     transform: scale(1.1);
 }
-.likert-scale input {
-    display: none; /* ラジオボタンの●を非表示 */
-}
+.likert-scale input { display: none; }
 .likert-scale span {
     display: block;
-    width: 35px;
-    height: 35px;
     line-height: 35px;
     border-radius: 50%;
-    background: #ede7f9;
-    color: #6A4C9C;
     font-weight: 500;
     font-size: 0.9em;
     transition: all 0.2s ease-in-out;
 }
-.likert-scale input:checked + span {
-    background: linear-gradient(135deg, #FF69B4, #C77DFF); /* ピンク〜紫 */
-    color: #fff;
-    font-weight: 700;
-    transform: scale(1.2);
-    box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
-}
-/* 5段階の数字 (1, 2, 3, 4, 5) */
-.likert-scale span::after {
-    content: attr(data-label);
-}
-
+.likert-scale span::after { content: attr(data-label); }
+.likert-scale label:nth-child(1) span,
+.likert-scale label:nth-child(5) span { width: 42px; height: 42px; line-height: 42px; }
+.likert-scale label:nth-child(2) span,
+.likert-scale label:nth-child(4) span { width: 35px; height: 35px; line-height: 35px; }
+.likert-scale label:nth-child(3) span { width: 30px; height: 30px; line-height: 30px; }
+.likert-scale span[data-label="1"] { background: #d4d4d8; color: #52525b; }
+.likert-scale span[data-label="2"] { background: #e4e4e7; color: #52525b; }
+.likert-scale span[data-label="3"] { background: #ede7f9; color: #6A4C9C; }
+.likert-scale span[data-label="4"] { background: #fde2f3; color: #c026d3; }
+.likert-scale span[data-label="5"] { background: #fbcfe8; color: #be185d; }
+.likert-scale input[value="1"]:checked + span { background: #a1a1aa; color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(161,161,170, 0.4);}
+.likert-scale input[value="2"]:checked + span { background: #b4b4bd; color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(180,180,189, 0.4);}
+.likert-scale input[value="3"]:checked + span { background: #C77DFF; color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(199,125,255, 0.4);}
+.likert-scale input[value="4"]:checked + span { background: #f472b6; color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(244,114,182, 0.4);}
+.likert-scale input[value="5"]:checked + span { background: #ec4899; color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(236,72,153, 0.4);}
 .likert-labels {
     display: flex;
     justify-content: space-between;
     font-size: 0.85em;
     color: #796c8c;
-    padding: 5px 10px 0 10px;
+    padding: 0 10px;
 }
 
 /* --- 送信ボタン --- */
 #submit-btn {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #FF69B4, #6A4C9C); /* ピンク〜紫 */
+    background: linear-gradient(135deg, #FF69B4, #6A4C9C);
     color: #fff;
     padding: 14px 25px;
     border: none;
-    border-radius: 50px; /* 角丸 */
+    border-radius: 50px;
     font-size: 1.2em;
     font-weight: 600;
     cursor: pointer;
@@ -135,21 +144,85 @@ h1 {
     color: #6A4C9C;
     font-size: 1.8em;
     text-align: center;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Playfair Display', serif;
 }
 #result h3 { /* タイプ名 */
     font-family: 'Poppins', sans-serif;
-    color: #FF69B4; /* ピンク */
+    color: #FF69B4;
     font-size: 1.5em;
     text-align: center;
     margin-top: 10px;
     margin-bottom: 25px;
 }
+#result-image {
+    display: block;
+    max-width: 80%;
+    height: auto;
+    margin: 0 auto 25px auto;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* --- ★追加★ 「あなたの強み」サマリー --- */
+#result-strength {
+    text-align: center;
+    font-size: 1.15em;
+    font-weight: 700;
+    color: #3f364f;
+    background-color: #f7f3ff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    border: 1px dashed #c5b5e6;
+}
+
 #result p { /* 解説文 */
     color: #4B415C;
     font-size: 1.05em;
     line-height: 1.8;
     margin-bottom: 30px;
+    text-align: left;
+}
+
+/* --- ★追加★ 「4軸の解説」エリア --- */
+#result-breakdown {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    padding-top: 25px;
+    border-top: 1px dashed #d6c9e0;
+}
+.breakdown-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    background: #fdfcff;
+    border: 1px solid #ede7f9;
+    border-radius: 8px;
+    padding: 12px 15px;
+}
+.breakdown-item span:first-child { /* L, F, C などのアルファベット */
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #FF69B4, #C77DFF);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    margin-right: 15px;
+}
+.breakdown-item p { /* 解説文 (例: リード型) */
+    margin: 0;
+    font-size: 0.95em;
+    color: #4B415C;
+    line-height: 1.5;
+}
+.breakdown-item p strong {
+    font-size: 1.1em;
+    color: #6A4C9C;
+    display: block;
 }
 
 /* --- シェアボタン --- */
@@ -173,20 +246,9 @@ h1 {
     min-width: 120px;
     text-align: center;
 }
-.share-btn:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
-}
-/* Xボタン */
-#share-x { 
-    background-color: #000000; 
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-}
-/* LINEボタン */
-#share-line { 
-    background-color: #00B900; 
-    box-shadow: 0 3px 10px rgba(0, 185, 0, 0.3);
-}
+.share-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+#share-x { background-color: #000000; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); }
+#share-line { background-color: #00B900; box-shadow: 0 3px 10px rgba(0, 185, 0, 0.3); }
 
 /* --- ローディング --- */
 #loading { 
@@ -201,37 +263,22 @@ h1 {
 
 /* --- レスポンシブデザイン --- */
 @media (max-width: 768px) {
-    #shindan-app {
-        margin: 20px auto;
-        padding: 20px 25px;
-    }
-    h1 {
-        font-size: 2em;
-    }
-    .question p {
-        font-size: 1.05em;
-    }
-    .likert-scale span {
-        width: 30px;
-        height: 30px;
-        line-height: 30px;
-        font-size: 0.85em;
-    }
-    .likert-labels {
-        font-size: 0.8em;
-    }
-    #submit-btn {
-        font-size: 1.1em;
-    }
-    #result h2 {
-        font-size: 1.6em;
-    }
-    #result h3 {
-        font-size: 1.3em;
-    }
-    .share-btn {
-        display: block;
-        width: calc(100% - 40px);
-        margin: 10px auto;
-    }
+    #shindan-app { margin: 20px auto; padding: 20px 25px; }
+    h1 { font-size: 2.2em; }
+    .subtitle { font-size: 1em; }
+    .question p { font-size: 1.05em; }
+    .likert-scale label:nth-child(1) span,
+    .likert-scale label:nth-child(5) span { width: 38px; height: 38px; line-height: 38px; }
+    .likert-scale label:nth-child(2) span,
+    .likert-scale label:nth-child(4) span { width: 32px; height: 32px; line-height: 32px; }
+    .likert-scale label:nth-child(3) span { width: 28px; height: 28px; line-height: 28px; }
+    .likert-labels { font-size: 0.8em; }
+    #result-image { max-width: 90%; }
+    /* ★追加★ */
+    #result-strength { font-size: 1.05em; padding: 12px 15px; }
+    .breakdown-item span:first-child { width: 35px; height: 35px; line-height: 35px; font-size: 1.3em; margin-right: 12px; }
+    .breakdown-item p { font-size: 0.9em; }
+    .breakdown-item p strong { font-size: 1em; }
+    /* ★ここまで★ */
+    .share-btn { display: block; width: calc(100% - 40px); margin: 10px auto; }
 }
