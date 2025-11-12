@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>得意な接客タイプ テスト</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
+    <style>
+        body { font-family: sans-serif; margin: 20px; background: #f4f4f4; }
+        
+        /* ★変更★ IDセレクタ名を変更 */
+        #personality-test-app { 
+            max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+
+        .question { margin-bottom: 20px; }
+        .question p { font-weight: bold; }
+        .options label { display: block; margin: 5px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; }
+        .options input { display: none; }
+        .options input:checked + span { font-weight: bold; color: #007bff; }
+        #submit-btn { background: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; display: block; width: 100%; margin-top: 20px; }
+        #result { margin-top: 30px; padding: 20px; background: #eef7ff; border: 1px solid #bde0ff; border-radius: 5px; display: none; }
+        #result h2 { margin-top: 0; color: #0056b3; }
+        #share-buttons { margin-top: 25px; padding-top: 15px; border-top: 1px dashed #bde0ff; }
+        .share-btn { text-decoration: none; padding: 8px 15px; margin: 5px; border-radius: 5px; color: #fff; font-weight: bold; display: inline-block; }
+        #share-twitter { background-color: #1DA1F2; }
+        #share-line { background-color: #00B900; }
+        #loading { text-align: center; font-size: 18px; padding: 20px; color: #555; }
+    </style>
+</head>
+<body>
+
+    <div id="personality-test-app">
+        <h1>得意な接客タイプ テスト</h1>
+
+        <form id="personality-test-form">
+            <div id="loading">テストデータを読み込んでいます...</div>
+            
+            <button type="submit" id="submit-btn" style="display:none;">テストする</button>
+        </form>
+
+        <div id="result">
+            <h2>あなたのタイプは... <span id="result-type"></span></h2>
+            <h3 id="result-title"></h3>
+            <p id="result-description"></p>
+            <div id="share-buttons">
+                <a href="#" id="share-twitter" class="share-btn" target="_blank">Twitterでシェア</a>
+                <a href="#" id="share-line" class="share-btn" target="_blank">LINEで送る</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- グローバル変数 ---
+        let questionData = []; 
+        let resultData = {};   
+
+        // --- 1. アプリの初期化処理 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAllData();
+        });
+
+        // --- 2. 必要なCSVファイルをすべて読み込む ---
+        async function loadAllData() {
+            try {
+                const [questions, results] = await Promise.all([
+                    loadCSV('questions.csv'),
+                    loadCSV('results.csv')
+                ]);
+
+                questionData = questions;
+                results.forEach(row => {
+                    if (row.type) {
+                        resultData[row.type] = {
+                            title: row.title,
+                            description: row.description
+                        };
+                    }
+                });
+
+                generateQuestionsHTML();
+
+            } catch (error) {
+                console.error("CSVファイルの読み込みに失敗しました:", error);
+                document.getElementById('loading').textContent = "エラー: テストデータを読み込めませんでした。";
+            }
+        }
+
+        // --- 3. CSVファイルを読み込む関数 (Papa Parseを使用) ---
+        function loadCSV(url) {
+            return new Promise((resolve, reject) => {
+                Papa.parse(url, {
+                    download: true,       
+                    header: true,         
+                    skipEmptyLines: true, 
+                    encoding: "UTF-8",    
+                    complete: (results) => {
+                        resolve(results.data); 
+                    },
+                    error: (err) => {
+                        reject(err); 
+                    }
+                });
+            });
+        }
+
+        // --- 4. 質問フォームをHTMLで動的に生成する ---
+        function generateQuestionsHTML() {
+            // ★変更★ ID名を変更
+            const form = document.getElementById('personality-test-form');
+            const loadingEl = document.getElementById('loading');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            let htmlContent = '';
+
+            questionData.forEach(q => {
+                htmlContent += `
+                    <div class="question" data-axis="${q.axis}">
+                        <p>${q.id.toUpperCase()}. ${q.question}</p>
+                        <div class="options">
+                            <label><input type="radio" name="${q.id}" value="A"> <span>${q.optionA}</span></label>
+                            <label><input type="radio" name="${q.id}" value="B"> <span>${q.optionB}</span></label>
+                        </div>
+                    </div>
+                `;
+            });
+
+            loadingEl.style.display = 'none';
+            form.innerHTML = htmlContent; 
+            form.appendChild(submitBtn);  
+            submitBtn.style.display = 'block';
+        }
+
+        // --- 5. 診断実行 (フォーム送信時の処理) ---
+        // ★変更★ ID名を変更
+        document.getElementById('personality-test-form').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            const formData = new FormData(event.target);
+            const answers = Object.fromEntries(formData.entries());
+
+            if (Object.keys(answers).length < questionData.length) {
+                alert("すべての質問に回答してください。");
+                return;
+            }
+
+            // 集計ロジック
+            const counts = { axis1: { A: 0, B: 0 }, axis2: { A: 0, B: 0 }, axis3: { A: 0, B: 0 }, axis4: { A: 0, B: 0 } };
+            questionData.forEach(q => {
+                const answer = answers[q.id]; 
+                counts[q.axis][answer]++; 
+            });
+
+            // タイプの決定
+            const type = [
+                (counts.axis1.A > counts.axis1.B) ? 'L' : 'F',
+                (counts.axis2.A > counts.axis2.B) ? 'C' : 'P',
+                (counts.axis3.A > counts.axis3.B) ? 'I' : 'O',
+                (counts.axis4.A > counts.axis4.B) ? 'H' : 'F'
+            ].join('');
+
+            // 結果の表示
+            const result = resultData[type] || resultData["DEFAULT"];
+            document.getElementById('result-type').textContent = type;
+            document.getElementById('result-title').textContent = result.title;
+            document.getElementById('result-description').textContent = result.description;
+            document.getElementById('result').style.display = 'block';
+
+            // シェアロジック
+            const shareUrl = window.location.href; 
+            const hashTag = "接客タイプテスト"; 
+            const shareText = `私の得意な接客タイプは【${result.title}（${type}）】でした！\nあなたもテストしてみよう！\n#${hashTag}\n`; 
+            
+            document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+            document.getElementById('share-line').href = `https://line.me/R/msg/text/?${encodeURIComponent(shareText + shareUrl)}`;
+
+            // 結果表示位置にスクロール
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
