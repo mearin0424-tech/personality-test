@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>得意な接客タイプ診断</title>
+    <title>接客タイプ診断</title>
     
-    <meta property="og:title" content="得意な接客タイプ診断" />
+    <meta property="og:title" content="接客タイプ診断" />
     <meta property="og:description" content="あなたにピッタリな接客スタイルは？12の質問であなたの強みを診断します！" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://[あなたのサイトURL]/shindan.html" /> 
-    <meta property="og:image" content="https://[あなたのサイトURL]/og-image.png" /> <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:image" content="https://[あなたのサイトURL]/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     
@@ -18,18 +19,26 @@
 <body>
 
     <div id="shindan-app">
-        <h1>得意な接客タイプ診断</h1>
+        <h1>接客タイプ診断</h1>
+        <p class="subtitle">What is Your Hospitality Style</p>
 
         <form id="shindan-form">
             <div id="loading">診断データを読み込んでいます...</div>
-            
             <button type="submit" id="submit-btn" style="display:none;">診断する</button>
         </form>
 
         <div id="result">
             <h2>あなたのタイプは... <span id="result-type"></span></h2>
             <h3 id="result-title"></h3>
+            
+            <img id="result-image" src="" alt="診断結果イラスト" style="display: none;">
+            
+            <div id="result-strength"></div>
+            
             <p id="result-description"></p>
+
+            <div id="result-breakdown"></div>
+
             <div id="share-buttons">
                 <a href="#" id="share-x" class="share-btn" target="_blank">Xでシェア</a>
                 <a href="#" id="share-line" class="share-btn" target="_blank">LINEでシェア</a>
@@ -41,6 +50,25 @@
         // --- グローバル変数 ---
         let questionData = []; 
         let resultData = {};   
+
+        // --- ★追加★ 4軸の静的解説データ ---
+        const axisDescriptions = {
+            'L': { title: 'リード型 (L)', text: '会話の主導権を握り、積極的に場を盛り上げるのが得意なタイプです。' },
+            'F': { title: 'フォロワー型 (F)', text: '聞き役に徹し、お客様のペースに合わせて心地よい空間を作るのが得意なタイプです。' },
+            'C': { title: '恋人型 (C)', text: '「女性らしさ」や「色気」を武器に、お客様を異性としてドキドキさせるのが得意なタイプです。' },
+            'P': { title: 'パートナー型 (P)', text: '「知性」や「人間的な面白さ」を武器に、お客様と対等な関係を築くのが得意なタイプです。' },
+            'I': { title: '懐（ふところ）型 (I)', text: '「人懐っこさ」や「素の自分」を見せ、短時間でお客様の懐に飛び込むのが得意なタイプです。' },
+            'O': { title: '領域（テリトリー）型 (O)', text: '「プロとしての距離感」を保ち、「憧れ」や「ミステリアスさ」を演出するのが得意なタイプです。' },
+            'H': { title: 'ハンター型 (H)', text: '「瞬発力」で、イベントなど短期集中的に大きな結果を出すのが得意なタイプです。' },
+            'F': { title: 'ファーマー型 (F)', text: '「マメな連絡」や「継続力」で、お客様との関係をじっくり育てるのが得意なタイプです。' }
+            // ※H/FのFは、L/FのFと同じキーですが、診断ロジック(type[0], type[3])で
+            // 区別して呼び出すため、JavaScript上は1つの'F'キーで問題ありません。
+            // 説明文が同じでよければ、このままでOKです。
+            // もしH/FのFの説明文を変えたい場合、以下のようにJS側で工夫します。
+        };
+        // H/FのF (ファーマー型) の説明文を上書き（または個別定義）
+        axisDescriptions['Farmer_F'] = { title: 'ファーマー型 (F)', text: '「マメな連絡」や「継続力」で、お客様との関係をじっくり育てるのが得意なタイプです。' };
+
 
         // --- 1. アプリの初期化処理 ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -60,12 +88,12 @@
                     if (row.type) {
                         resultData[row.type] = {
                             title: row.title,
-                            description: row.description
+                            description: row.description,
+                            strength: row.strength // ★追加★ strength列を読み込む
                         };
                     }
                 });
 
-                // HTMLの質問フォームを生成する
                 generateQuestionsHTML();
 
             } catch (error) {
@@ -74,7 +102,7 @@
             }
         }
 
-        // --- 3. CSVファイルを読み込む関数 (変更なし) ---
+        // --- 3. CSVファイルを読み込む関数 ---
         function loadCSV(url) {
             return new Promise((resolve, reject) => {
                 Papa.parse(url, {
@@ -85,7 +113,7 @@
             });
         }
 
-        // --- 4. ★変更★ 5段階評価の質問フォームを動的に生成する ---
+        // --- 4. 5段階評価の質問フォームを動的に生成する ---
         function generateQuestionsHTML() {
             const form = document.getElementById('shindan-form');
             const loadingEl = document.getElementById('loading');
@@ -106,9 +134,8 @@
                             <label><input type="radio" name="${q.id}" value="5"> <span data-label="5"></span></label>
                         </div>
                         <div class="likert-labels">
-                            <span>強くそう思わない</span>
-                            <span>どちらでもない</span>
-                            <span>強くそう思う</span>
+                            <span>そう思わない</span>
+                            <span>そう思う</span>
                         </div>
                     </div>
                 `;
@@ -121,7 +148,7 @@
             submitBtn.style.display = 'block';
         }
 
-        // --- 5. ★変更★ 診断実行 (5段階評価の集計ロジック) ---
+        // --- 5. 診断実行 (5段階評価の集計ロジック) ---
         document.getElementById('shindan-form').addEventListener('submit', function(event) {
             event.preventDefault(); 
 
@@ -133,29 +160,19 @@
                 return;
             }
 
-            // --- 集計ロジック ---
-            // 5: 強くそう思う (A+2)
-            // 4: そう思う (A+1)
-            // 3: どちらでもない (0)
-            // 2: そう思わない (B+1)
-            // 1: 強くそう思わない (B+2)
+            // 集計ロジック
             const scores = { 
-                axis1: { A: 0, B: 0 }, // L/F
-                axis2: { A: 0, B: 0 }, // C/P
-                axis3: { A: 0, B: 0 }, // I/O
-                axis4: { A: 0, B: 0 }  // H/F
+                axis1: { A: 0, B: 0 }, axis2: { A: 0, B: 0 },
+                axis3: { A: 0, B: 0 }, axis4: { A: 0, B: 0 }
             };
-
             questionData.forEach(q => {
-                const answer = answers[q.id]; // '1'～'5' の値
-                const axis = q.axis;
-
+                const answer = answers[q.id]; const axis = q.axis;
                 switch (answer) {
-                    case '5': scores[axis].A += 2; break; // 強くそう思う
-                    case '4': scores[axis].A += 1; break; // そう思う
-                    case '3': break;                      // どちらでもない
-                    case '2': scores[axis].B += 1; break; // そう思わない
-                    case '1': scores[axis].B += 2; break; // 強くそう思わない
+                    case '5': scores[axis].A += 2; break;
+                    case '4': scores[axis].A += 1; break;
+                    case '3': break;
+                    case '2': scores[axis].B += 1; break;
+                    case '1': scores[axis].B += 2; break;
                 }
             });
 
@@ -171,18 +188,55 @@
             const result = resultData[type] || resultData["DEFAULT"];
             document.getElementById('result-type').textContent = type;
             document.getElementById('result-title').textContent = result.title;
-            // ★変更★ 改行(\n)を <br> に変換してHTMLに挿入
             document.getElementById('result-description').innerHTML = result.description.replace(/\n/g, '<br>');
+
+            // ★追加★ 「強み」の表示
+            document.getElementById('result-strength').textContent = result.strength;
+
+            // ★追加★ イラスト表示ロジック
+            const resultImage = document.getElementById('result-image');
+            if (result.title !== "診断不能タイプ") {
+                resultImage.src = `images/${type}.png`;
+                resultImage.alt = result.title;
+                resultImage.style.display = 'block';
+            } else {
+                resultImage.style.display = 'none';
+            }
+
+            // ★追加★ 「4軸の解説」の動的生成
+            const breakdownEl = document.getElementById('result-breakdown');
+            breakdownEl.innerHTML = ''; // 既存の内容をクリア
+            
+            const typeChars = type.split(''); // ["L", "P", "I", "F"]
+            
+            // 軸1 (L or F)
+            let desc1 = axisDescriptions[typeChars[0]];
+            // 軸2 (C or P)
+            let desc2 = axisDescriptions[typeChars[1]];
+            // 軸3 (I or O)
+            let desc3 = axisDescriptions[typeChars[2]];
+            // 軸4 (H or F)
+            let desc4_key = typeChars[3] === 'F' ? 'Farmer_F' : typeChars[3]; // Hか、Farmer_Fか
+            let desc4 = axisDescriptions[desc4_key];
+
+            [desc1, desc2, desc3, desc4].forEach(desc => {
+                breakdownEl.innerHTML += `
+                    <div class="breakdown-item">
+                        <span>${desc.title.match(/[A-Z]/)[0]}</span>
+                        <p><strong>${desc.title}</strong>${desc.text}</p>
+                    </div>
+                `;
+            });
+            // --- ここまで ---
+
             document.getElementById('result').style.display = 'block';
 
-            // --- ★変更★ シェアロジックの更新 ---
-            const shareUrl = window.location.href; // このページのURL
+            // シェアロジック
+            const shareUrl = window.location.href; 
             const hashTag = "接客タイプ診断"; 
-            const shareText = `私の得意な接客タイプは【${result.title}（${type}）】でした！\nあなたも診断してみよう！\n#${hashTag}\n`;
+            const shareText = `私の接客タイプは【${result.title}（${type}）】でした！\nあなたの強みは「${result.strength}」\nあなたも診断してみよう！\n#${hashTag}\n`; // ★シェア文言に「強み」を追加
             
-            // X (Twitter)
             document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
-            // LINE
             document.getElementById('share-line').href = `https://line.me/R/msg/text/?${encodeURIComponent(shareText + shareUrl)}`;
 
             // 結果表示位置にスクロール
