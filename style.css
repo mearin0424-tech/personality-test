@@ -22,26 +22,65 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* --- タイトル --- */
-h1 {
-    font-family: 'Playfair Display', serif;
+/* --- ★追加★ スタート画面 --- */
+#start-screen {
     text-align: center;
+    padding: 20px 0;
+}
+#start-screen h1 {
+    font-family: 'Playfair Display', serif;
     color: #6A4C9C;
     margin-top: 0;
     margin-bottom: 5px;
     font-size: 3em;
     font-weight: 700;
 }
-.subtitle {
+#start-screen .subtitle {
     font-family: 'Noto Sans JP', sans-serif;
-    text-align: center;
     font-size: 1.1em;
     font-weight: 500;
     color: #9279b8;
     margin-top: 0;
-    margin-bottom: 40px;
+    margin-bottom: 35px;
     letter-spacing: 1px;
 }
+#start-screen p.description {
+    font-size: 1.1em;
+    color: #4B415C;
+    line-height: 1.8;
+    margin-bottom: 40px;
+}
+#start-btn {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #FF69B4, #6A4C9C);
+    color: #fff;
+    padding: 14px 40px; /* 横幅を広めに */
+    border: none;
+    border-radius: 50px;
+    font-size: 1.3em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(106, 76, 156, 0.3);
+    transition: all 0.3s ease-in-out;
+}
+#start-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(106, 76, 156, 0.4);
+}
+#start-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+/* --- ★ここまで★ --- */
+
+
+/* --- ★変更★ 診断フォーム (初期非表示) --- */
+#shindan-form {
+    display: none;
+}
+
 
 /* --- 質問エリア --- */
 .question {
@@ -66,23 +105,10 @@ h1 {
     align-items: center;
     padding: 10px 0;
 }
-.likert-scale label {
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.2s ease-in-out;
-}
-.likert-scale label:hover {
-    transform: scale(1.1);
-}
+.likert-scale label { cursor: pointer; text-align: center; transition: all 0.2s ease-in-out; }
+.likert-scale label:hover { transform: scale(1.1); }
 .likert-scale input { display: none; }
-.likert-scale span {
-    display: block;
-    line-height: 35px;
-    border-radius: 50%;
-    font-weight: 500;
-    font-size: 0.9em;
-    transition: all 0.2s ease-in-out;
-}
+.likert-scale span { display: block; line-height: 35px; border-radius: 50%; font-weight: 500; font-size: 0.9em; transition: all 0.2s ease-in-out; }
 .likert-scale span::after { content: attr(data-label); }
 .likert-scale label:nth-child(1) span,
 .likert-scale label:nth-child(5) span { width: 42px; height: 42px; line-height: 42px; }
@@ -99,15 +125,9 @@ h1 {
 .likert-scale input[value="3"]:checked + span { background: #C77DFF; color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(199,125,255, 0.4);}
 .likert-scale input[value="4"]:checked + span { background: #f472b6; color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(244,114,182, 0.4);}
 .likert-scale input[value="5"]:checked + span { background: #ec4899; color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(236,72,153, 0.4);}
-.likert-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.85em;
-    color: #796c8c;
-    padding: 0 10px;
-}
+.likert-labels { display: flex; justify-content: space-between; font-size: 0.85em; color: #796c8c; padding: 0 10px; }
 
-/* --- 送信ボタン --- */
+/* --- 送信ボタン (診断画面) --- */
 #submit-btn {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #FF69B4, #6A4C9C);
@@ -124,12 +144,9 @@ h1 {
     box-shadow: 0 5px 20px rgba(106, 76, 156, 0.3);
     transition: all 0.3s ease-in-out;
 }
-#submit-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(106, 76, 156, 0.4);
-}
+#submit-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(106, 76, 156, 0.4); }
 
-/* --- 結果表示エリア --- */
+/* --- 結果表示エリア (初期非表示) --- */
 #result {
     margin-top: 40px;
     padding: 30px;
@@ -139,133 +156,34 @@ h1 {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     display: none;
 }
-#result h2 {
-    margin-top: 0;
-    color: #6A4C9C;
-    font-size: 1.8em;
-    text-align: center;
-    font-family: 'Playfair Display', serif;
-}
-#result h3 { /* タイプ名 */
-    font-family: 'Poppins', sans-serif;
-    color: #FF69B4;
-    font-size: 1.5em;
-    text-align: center;
-    margin-top: 10px;
-    margin-bottom: 25px;
-}
-#result-image {
-    display: block;
-    max-width: 80%;
-    height: auto;
-    margin: 0 auto 25px auto;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-/* --- ★追加★ 「あなたの強み」サマリー --- */
-#result-strength {
-    text-align: center;
-    font-size: 1.15em;
-    font-weight: 700;
-    color: #3f364f;
-    background-color: #f7f3ff;
-    padding: 15px 20px;
-    border-radius: 10px;
-    margin-bottom: 25px;
-    border: 1px dashed #c5b5e6;
-}
-
-#result p { /* 解説文 */
-    color: #4B415C;
-    font-size: 1.05em;
-    line-height: 1.8;
-    margin-bottom: 30px;
-    text-align: left;
-}
-
-/* --- ★追加★ 「4軸の解説」エリア --- */
-#result-breakdown {
-    margin-top: 30px;
-    margin-bottom: 20px;
-    padding-top: 25px;
-    border-top: 1px dashed #d6c9e0;
-}
-.breakdown-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    background: #fdfcff;
-    border: 1px solid #ede7f9;
-    border-radius: 8px;
-    padding: 12px 15px;
-}
-.breakdown-item span:first-child { /* L, F, C などのアルファベット */
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.5em;
-    font-weight: 700;
-    color: #fff;
-    background: linear-gradient(135deg, #FF69B4, #C77DFF);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    margin-right: 15px;
-}
-.breakdown-item p { /* 解説文 (例: リード型) */
-    margin: 0;
-    font-size: 0.95em;
-    color: #4B415C;
-    line-height: 1.5;
-}
-.breakdown-item p strong {
-    font-size: 1.1em;
-    color: #6A4C9C;
-    display: block;
-}
-
-/* --- シェアボタン --- */
-#share-buttons {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px dashed #d6c9e0;
-    text-align: center;
-}
-.share-btn {
-    font-family: 'Poppins', sans-serif;
-    text-decoration: none;
-    padding: 10px 20px;
-    margin: 8px;
-    border-radius: 50px;
-    color: #fff;
-    font-weight: 600;
-    display: inline-block;
-    font-size: 0.95em;
-    transition: all 0.2s ease-in-out;
-    min-width: 120px;
-    text-align: center;
-}
+#result h2 { margin-top: 0; color: #6A4C9C; font-size: 1.8em; text-align: center; font-family: 'Playfair Display', serif; }
+#result h3 { font-family: 'Poppins', sans-serif; color: #FF69B4; font-size: 1.5em; text-align: center; margin-top: 10px; margin-bottom: 25px; }
+#result-image { display: block; max-width: 80%; height: auto; margin: 0 auto 25px auto; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+#result-strength { text-align: center; font-size: 1.15em; font-weight: 700; color: #3f364f; background-color: #f7f3ff; padding: 15px 20px; border-radius: 10px; margin-bottom: 25px; border: 1px dashed #c5b5e6; }
+#result p { color: #4B415C; font-size: 1.05em; line-height: 1.8; margin-bottom: 30px; text-align: left; }
+#result-breakdown { margin-top: 30px; margin-bottom: 20px; padding-top: 25px; border-top: 1px dashed #d6c9e0; }
+.breakdown-item { display: flex; align-items: center; margin-bottom: 15px; background: #fdfcff; border: 1px solid #ede7f9; border-radius: 8px; padding: 12px 15px; }
+.breakdown-item span:first-child { font-family: 'Poppins', sans-serif; font-size: 1.5em; font-weight: 700; color: #fff; background: linear-gradient(135deg, #FF69B4, #C77DFF); border-radius: 50%; width: 40px; height: 40px; line-height: 40px; text-align: center; margin-right: 15px; }
+.breakdown-item p { margin: 0; font-size: 0.95em; color: #4B415C; line-height: 1.5; }
+.breakdown-item p strong { font-size: 1.1em; color: #6A4C9C; display: block; }
+#share-buttons { margin-top: 30px; padding-top: 20px; border-top: 1px dashed #d6c9e0; text-align: center; }
+.share-btn { font-family: 'Poppins', sans-serif; text-decoration: none; padding: 10px 20px; margin: 8px; border-radius: 50px; color: #fff; font-weight: 600; display: inline-block; font-size: 0.95em; transition: all 0.2s ease-in-out; min-width: 120px; text-align: center; }
 .share-btn:hover { transform: translateY(-2px); opacity: 0.9; }
 #share-x { background-color: #000000; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); }
 #share-line { background-color: #00B900; box-shadow: 0 3px 10px rgba(0, 185, 0, 0.3); }
 
-/* --- ローディング --- */
-#loading { 
-    text-align: center; 
-    font-size: 1.2em; 
-    padding: 30px; 
-    color: #6A4C9C; 
-    background-color: #f7f3ff;
-    border-radius: 8px;
-    border: 1px dashed #c5b5e6;
-}
+/* --- ローディング (フォーム内) --- */
+#loading { text-align: center; font-size: 1.2em; padding: 30px; color: #6A4C9C; background-color: #f7f3ff; border-radius: 8px; border: 1px dashed #c5b5e6; }
 
 /* --- レスポンシブデザイン --- */
 @media (max-width: 768px) {
     #shindan-app { margin: 20px auto; padding: 20px 25px; }
-    h1 { font-size: 2.2em; }
-    .subtitle { font-size: 1em; }
+    /* ★変更★ スタート画面 */
+    #start-screen h1 { font-size: 2.2em; }
+    #start-screen .subtitle { font-size: 1em; }
+    #start-screen p.description { font-size: 1em; }
+    #start-btn { font-size: 1.1em; }
+    /* ★ここまで★ */
     .question p { font-size: 1.05em; }
     .likert-scale label:nth-child(1) span,
     .likert-scale label:nth-child(5) span { width: 38px; height: 38px; line-height: 38px; }
@@ -274,11 +192,9 @@ h1 {
     .likert-scale label:nth-child(3) span { width: 28px; height: 28px; line-height: 28px; }
     .likert-labels { font-size: 0.8em; }
     #result-image { max-width: 90%; }
-    /* ★追加★ */
     #result-strength { font-size: 1.05em; padding: 12px 15px; }
     .breakdown-item span:first-child { width: 35px; height: 35px; line-height: 35px; font-size: 1.3em; margin-right: 12px; }
     .breakdown-item p { font-size: 0.9em; }
     .breakdown-item p strong { font-size: 1em; }
-    /* ★ここまで★ */
     .share-btn { display: block; width: calc(100% - 40px); margin: 10px auto; }
 }
