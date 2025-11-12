@@ -65,26 +65,33 @@
             'Farmer_F': { title: 'ファーマー型 (F)', text: '「マメな連絡」や「継続力」で、お客様との関係をじっくり育てるのが得意なタイプです。' }
         };
 
-        // --- 1. ★変更★ アプリの初期化処理 ---
+        // --- 1. アプリの初期化処理 ---
         document.addEventListener('DOMContentLoaded', () => {
-            // CSVの読み込みと質問の生成を先に行う
-            loadAllData();
-
-            // ★追加★ スタートボタンにクリックイベントを設定
-            const startBtn = document.getElementById('start-btn');
+            // ★追加★ 画面要素を取得
             const startScreen = document.getElementById('start-screen');
             const shindanForm = document.getElementById('shindan-form');
+            const resultScreen = document.getElementById('result');
+            const startBtn = document.getElementById('start-btn');
 
+            // ★追加★ 念のため、JSでも初期状態をセット
+            startScreen.style.display = 'block';
+            shindanForm.style.display = 'none';
+            resultScreen.style.display = 'none';
+
+            // CSVの読み込みと質問の生成を先に行う
+            loadAllData(startBtn);
+
+            // ★変更★ スタートボタンにクリックイベントを設定
             startBtn.addEventListener('click', () => {
-                // スタート画面を非表示
-                startScreen.style.display = 'none';
-                // 診断フォームを表示
-                shindanForm.style.display = 'block';
+                startScreen.style.display = 'none'; // スタート画面を非表示
+                shindanForm.style.display = 'block'; // 診断フォームを表示
+                // 画面の先頭にスクロール
+                document.getElementById('shindan-app').scrollIntoView({ behavior: 'smooth' });
             });
         });
 
         // --- 2. 必要なCSVファイルをすべて読み込む ---
-        async function loadAllData() {
+        async function loadAllData(startBtn) { // startBtnを引数で受け取る
             try {
                 const [questions, results] = await Promise.all([
                     loadCSV('questions.csv'),
@@ -105,14 +112,13 @@
                 // 質問フォームをHTMLで生成する (まだ非表示)
                 generateQuestionsHTML();
 
-                // ★追加★ CSV読み込み完了後、スタートボタンを有効化
-                const startBtn = document.getElementById('start-btn');
+                // CSV読み込み完了後、スタートボタンを有効化
                 startBtn.disabled = false;
                 startBtn.textContent = '診断をはじめる';
 
             } catch (error) {
                 console.error("CSVファイルの読み込みに失敗しました:", error);
-                document.getElementById('start-btn').textContent = "エラーが発生しました";
+                startBtn.textContent = "エラーが発生しました";
             }
         }
 
@@ -130,8 +136,8 @@
         // --- 4. 5段階評価の質問フォームを動的に生成する ---
         function generateQuestionsHTML() {
             const form = document.getElementById('shindan-form');
-            const loadingEl = document.getElementById('loading');
-            const submitBtn = document.getElementById('submit-btn');
+            const loadingEl = form.querySelector('#loading'); // form内のloadingを取得
+            const submitBtn = form.querySelector('#submit-btn');
             
             let htmlContent = '';
             let questionCount = 1;
@@ -156,10 +162,9 @@
                 questionCount++;
             });
 
-            // ★変更★ ローディングを非表示にし、質問と診断ボタンを表示
             loadingEl.style.display = 'none';
-            form.innerHTML = htmlContent; 
-            form.appendChild(submitBtn);  
+            // ★変更★ 質問HTMLをloadingElの前に挿入
+            loadingEl.insertAdjacentHTML('beforebegin', htmlContent);
             submitBtn.style.display = 'block';
         }
 
