@@ -13,9 +13,9 @@
     <meta name="twitter:card" content="summary_large_image">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
-    <link rel="manifest" href="/manifest.json">
+    
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="/personality-test/manifest.json">
 </head>
 <body>
 
@@ -258,6 +258,22 @@
             resultEl.scrollIntoView({ behavior: 'smooth' });
         });
     </script>
+    <script>
+        // GitHub Pagesのパスに合わせて調整
+        const REPO_PATH = '/personality-test/';
 
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // sw.js を登録します。scope でPWAが動作する範囲を指定します。
+                navigator.serviceWorker.register(REPO_PATH + 'sw.js', { scope: REPO_PATH })
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
