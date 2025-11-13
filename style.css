@@ -1,7 +1,56 @@
-/* ... (基本設定、メインコンテナは変更なし) ... */
+/* --- Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Playfair+Display:wght@700&display=swap');
 
-/* --- ★変更★ スタート画面 --- */
-/* ... (既存の #start-screen h1, .subtitle, p.description は変更なし) ... */
+/* --- 基本設定 --- */
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #fce0f3 0%, #e0d6ff 100%);
+    color: #4B415C;
+    line-height: 1.7;
+}
+
+/* --- メインコンテナ --- */
+#shindan-app {
+    max-width: 700px;
+    margin: 40px auto;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(75, 65, 92, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* --- スタート画面 --- */
+#start-screen {
+    text-align: center;
+    padding: 20px 0;
+    display: block; /* スタート画面は最初から表示 */
+}
+#start-screen h1 {
+    font-family: 'Playfair Display', serif;
+    color: #6A4C9C;
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 3em;
+    font-weight: 700;
+}
+#start-screen .subtitle {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #9279b8;
+    margin-top: 0;
+    margin-bottom: 35px;
+    letter-spacing: 1px;
+}
+#start-screen p.description {
+    font-size: 1.1em;
+    color: #4B415C;
+    line-height: 1.8;
+    margin-bottom: 40px;
+}
 
 /* --- ★修正1: トップ画像スタイル★ --- */
 #top-image {
@@ -13,10 +62,39 @@
 }
 /* --- ★ここまで★ --- */
 
-/* ... (既存の #start-btn 関連は変更なし) ... */
+/* --- スタートボタンのデザイン修正 --- */
+#start-btn {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f78bb8 0%, #9f85ff 100%); /* グラデーション変更 */
+    color: #fff;
+    padding: 14px 40px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.3em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(106, 76, 156, 0.3);
+    transition: all 0.3s ease-in-out;
+}
+#start-btn:hover:not(:disabled) {
+    transform: translateY(-5px) scale(1.05); /* ホバーで浮き上がる */
+    box-shadow: 0 10px 25px rgba(106, 76, 156, 0.5);
+}
+#start-btn:active:not(:disabled) {
+    transform: translateY(-2px) scale(0.98); /* クリックで沈む */
+}
+#start-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
 
-/* --- ★変更★ 診断フォーム (初期非表示) --- */
-/* ... (既存の #shindan-form は変更なし) ... */
+
+/* --- 診断フォーム (初期非表示) --- */
+#shindan-form {
+    display: none; /* JSで表示を切り替える */
+}
 
 /* --- ★修正2: 診断フォームのタイトル★ --- */
 .form-title {
@@ -40,7 +118,13 @@
     box-shadow: 0 4px 15px rgba(0, 0,0, 0.05);
     transition: all 0.5s ease; /* ★修正4用 */
 }
-/* ... (既存の .question p は変更なし) ... */
+.question p {
+    font-weight: 700;
+    font-size: 1.15em;
+    color: #3f364f;
+    margin-bottom: 20px;
+    text-align: left;
+}
 
 /* --- ★修正4: 回答済み質問のスタイル★ --- */
 .question.answered {
@@ -103,9 +187,51 @@
 
 .likert-labels { display: flex; justify-content: space-between; font-size: 0.85em; color: #796c8c; padding: 0 10px; }
 
+/* --- 送信ボタン (診断画面) --- */
+#submit-btn {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #FF69B4, #6A4C9C);
+    color: #fff;
+    padding: 14px 25px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2em;
+    font-weight: 600;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    box-shadow: 0 5px 20px rgba(106, 76, 156, 0.3);
+    transition: all 0.3s ease-in-out;
+}
+#submit-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(106, 76, 156, 0.4); }
 
-/* ... (送信ボタン、結果表示エリアは変更なし) ... */
-
+/* --- 結果表示エリア (初期非表示) --- */
+#result {
+    margin-top: 40px;
+    padding: 30px;
+    background: #fff;
+    border: 2px solid #e0d6ff;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    display: none; /* JSで表示を切り替える */
+}
+#result h2 { margin-top: 0; color: #6A4C9C; font-size: 1.8em; text-align: center; font-family: 'Playfair Display', serif; }
+#result h3 { font-family: 'Poppins', sans-serif; color: #FF69B4; font-size: 1.5em; text-align: center; margin-top: 10px; margin-bottom: 25px; }
+#result-image { display: block; max-width: 80%; height: auto; margin: 0 auto 25px auto; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+#result-strength { text-align: center; font-size: 1.15em; font-weight: 700; color: #3f364f; background-color: #f7f3ff; padding: 15px 20px; border-radius: 10px; margin-bottom: 25px; border: 1px dashed #c5b5e6; }
+#result p { color: #4B415C; font-size: 1.05em; line-height: 1.8; margin-bottom: 30px; text-align: left; }
+#result-breakdown { margin-top: 30px; margin-bottom: 20px; padding-top: 25px; border-top: 1px dashed #d6c9e0; }
+.breakdown-item { display: flex; align-items: center; margin-bottom: 15px; background: #fdfcff; border: 1px solid #ede7f9; border-radius: 8px; padding: 12px 15px; }
+.breakdown-item span:first-child { font-family: 'Poppins', sans-serif; font-size: 1.5em; font-weight: 700; color: #fff; background: linear-gradient(135deg, #FF69B4, #C77DFF); border-radius: 50%; width: 40px; height: 40px; line-height: 40px; text-align: center; margin-right: 15px; }
+.breakdown-item p { margin: 0; font-size: 0.95em; color: #4B415C; line-height: 1.5; }
+.breakdown-item p strong { font-size: 1.1em; color: #6A4C9C; display: block; }
+#share-buttons { margin-top: 30px; padding-top: 20px; border-top: 1px dashed #d6c9e0; text-align: center; }
+.share-btn { font-family: 'Poppins', sans-serif; text-decoration: none; padding: 10px 20px; margin: 8px; border-radius: 50px; color: #fff; font-weight: 600; display: inline-block; font-size: 0.95em; transition: all 0.2s ease-in-out; min-width: 120px; text-align: center; }
+.share-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+#share-x { background-color: #000000; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); }
+#share-line { background-color: #00B900; box-shadow: 0 3px 10px rgba(0, 185, 0, 0.3); }
+#loading { text-align: center; font-size: 1.2em; padding: 30px; color: #6A4C9C; background-color: #f7f3ff; border-radius: 8px; border: 1px dashed #c5b5e6; }
 
 /* --- レスポンシブデザイン --- */
 @media (max-width: 768px) {
@@ -113,25 +239,31 @@
     #start-screen h1 { font-size: 2.2em; }
     #start-screen .subtitle { font-size: 1em; }
     #start-screen p.description { font-size: 1em; }
-    
+
     /* ★修正1 レスポンシブ★ */
     #top-image { max-width: 90%; margin-bottom: 25px; }
-    
+
     #start-btn { font-size: 1.1em; }
 
     /* ★修正2 レスポンシブ★ */
     .form-title { font-size: 1.5em; margin-bottom: 25px; }
-    
+
     .question p { font-size: 1.05em; }
-    
+
     /* ★修正3 レスポンシブ★ */
     .likert-scale label:nth-child(1) span,
     .likert-scale label:nth-child(5) span { width: 38px; height: 38px; line-height: 38px; }
     .likert-scale label:nth-child(2) span,
     .likert-scale label:nth-child(4) span { width: 32px; height: 32px; line-height: 32px; }
     .likert-scale label:nth-child(3) span { width: 28px; height: 28px; line-height: 28px; }
-    
+
     .likert-labels { font-size: 0.8em; }
 
-/* ... (既存のレスポンシブ後半は変更なし) ... */
+    /* --- 既存のレスポンシブ後半 --- */
+    #result-image { max-width: 90%; }
+    #result-strength { font-size: 1.05em; padding: 12px 15px; }
+    .breakdown-item span:first-child { width: 35px; height: 35px; line-height: 35px; font-size: 1.3em; margin-right: 12px; }
+    .breakdown-item p { font-size: 0.9em; }
+    .breakdown-item p strong { font-size: 1em; }
+    .share-btn { display: block; width: calc(100% - 40px); margin: 10px auto; }
 }
