@@ -1,1 +1,4 @@
-<link rel="manifest" href="/manifest.json">
+{
+  "start_url": "/<repository-name>/",
+  "scope": "/<repository-name>/"
+}
