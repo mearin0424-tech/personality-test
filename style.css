@@ -52,7 +52,7 @@ body {
     margin-bottom: 40px;
 }
 
-/* --- ★修正1: トップ画像スタイル★ --- */
+/* --- トップ画像スタイル★ --- */
 #top-image {
     max-width: 80%; /* 幅を調整 */
     height: auto;
@@ -60,9 +60,7 @@ body {
     border-radius: 15px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
-/* --- ★ここまで★ --- */
 
-/* --- スタートボタンのデザイン修正 --- */
 #start-btn {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #f78bb8 0%, #9f85ff 100%); /* グラデーション変更 */
@@ -90,13 +88,34 @@ body {
     transform: none;
 }
 
+/* --- トップに戻る --- */
+.btn-back-to-top {
+    position: absolute;
+    top: 25px; /* コンテナのpaddingを考慮した位置 */
+    right: 30px;
+    background: #f7f3ff;
+    color: #6A4C9C;
+    border: 1px solid #c5b5e6;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 0.85em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10; /* 他の要素より手前に */
+    display: none; /* ★重要★ JSで制御するため初期は非表示 */
+}
+.btn-back-to-top:hover {
+    background: #e0d6ff;
+    color: #4B415C;
+}
 
 /* --- 診断フォーム (初期非表示) --- */
 #shindan-form {
     display: none; /* JSで表示を切り替える */
 }
 
-/* --- ★修正2: 診断フォームのタイトル★ --- */
+/* --- 診断フォームのタイトル --- */
 .form-title {
     font-family: 'Playfair Display', serif;
     color: #6A4C9C;
@@ -106,7 +125,6 @@ body {
     margin-top: 10px;
     margin-bottom: 30px;
 }
-/* --- ★ここまで★ --- */
 
 
 /* --- 質問エリア --- */
@@ -240,17 +258,21 @@ body {
     #start-screen .subtitle { font-size: 1em; }
     #start-screen p.description { font-size: 1em; }
 
-    /* ★修正1 レスポンシブ★ */
     #top-image { max-width: 90%; margin-bottom: 25px; }
 
     #start-btn { font-size: 1.1em; }
 
-    /* ★修正2 レスポンシブ★ */
+    .btn-back-to-top {
+        top: 15px;
+        right: 15px;
+        padding: 4px 12px;
+        font-size: 0.8em;
+    }
+    
     .form-title { font-size: 1.5em; margin-bottom: 25px; }
 
     .question p { font-size: 1.05em; }
 
-    /* ★修正3 レスポンシブ★ */
     .likert-scale label:nth-child(1) span,
     .likert-scale label:nth-child(5) span { width: 38px; height: 38px; line-height: 38px; }
     .likert-scale label:nth-child(2) span,
@@ -259,7 +281,6 @@ body {
 
     .likert-labels { font-size: 0.8em; }
 
-    /* --- 既存のレスポンシブ後半 --- */
     #result-image { max-width: 90%; }
     #result-strength { font-size: 1.05em; padding: 12px 15px; }
     .breakdown-item span:first-child { width: 35px; height: 35px; line-height: 35px; font-size: 1.3em; margin-right: 12px; }

@@ -24,15 +24,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const shindanForm = document.getElementById('shindan-form');
     const resultScreen = document.getElementById('result');
     const startBtn = document.getElementById('start-btn');
+    const backToTopBtn = document.getElementById('btn-back-to-top');
 
     // 念のため、JSでも初期状態をセット
     startScreen.style.display = 'block';
     shindanForm.style.display = 'none';
     resultScreen.style.display = 'none';
+    backToTopBtn.style.display = 'none';
 
     // CSVの読み込みと質問の生成を先に行う
     loadAllData(startBtn);
+    
+    // スタート画面に戻る（リセットする）関数
+    function resetToStart() {
+        // 画面切り替え
+        startScreen.style.display = 'block';
+        shindanForm.style.display = 'none';
+        resultScreen.style.display = 'none';
+        backToTopBtn.style.display = 'none'; // トップ画面では非表示
 
+        // フォームをリセット (選択を解除)
+        shindanForm.reset();
+
+        // 回答済みの .answered クラスをすべて削除
+        const answeredQuestions = document.querySelectorAll('.question.answered');
+        answeredQuestions.forEach(q => {
+            q.classList.remove('answered');
+        });
+        
+        // 既存の結果表示を念のためクリア
+        document.getElementById('result-type').textContent = '';
+        document.getElementById('result-title').textContent = '';
+        document.getElementById('result-breakdown').innerHTML = '';
+        document.getElementById('result-image').style.display = 'none';
+
+        // 画面の先頭にスクロール
+        document.getElementById('shindan-app').scrollIntoView({ behavior: 'smooth' });
+    }
+    
     // スタートボタンにクリックイベントを設定
     startBtn.addEventListener('click', () => {
         startScreen.style.display = 'none'; // スタート画面を非表示
@@ -40,6 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 画面の先頭にスクロール
         document.getElementById('shindan-app').scrollIntoView({ behavior: 'smooth' });
     });
+
+    // トップに戻るボタンのクリックイベント
+    backToTopBtn.addEventListener('click', resetToStart);
 });
 
 // --- 2. 必要なCSVファイルをすべて読み込む ---
@@ -64,7 +96,7 @@ async function loadAllData(startBtn) { // startBtnを引数で受け取る
         // 質問フォームをHTMLで生成する (まだ非表示)
         generateQuestionsHTML();
 
-        // ★修正4: 質問回答時にグレーアウトするイベントリスナーを設定
+        // 質問回答時にグレーアウトするイベントリスナーを設定
         setupAnsweredListener();
 
         // CSV読み込み完了後、スタートボタンを有効化
@@ -122,7 +154,7 @@ function generateQuestionsHTML() {
     submitBtn.style.display = 'block';
 }
 
-// --- 4.5. (★修正4★) 質問回答時のリスナー設定 ---
+// --- 4.5.質問回答時のリスナー設定 ---
 function setupAnsweredListener() {
     const form = document.getElementById('shindan-form');
     
