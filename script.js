@@ -227,7 +227,7 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
 
         //★WIP★　画像が用意できないので一時的にべた書き
         //resultImage.src = `images/${type}.png`;
-        resultImage.src = `kotowaza_buta_shinju.png`;
+        resultImage.src = `images/kotowaza_buta_shinju.png`;
         resultImage.alt = result.title;
         resultImage.style.display = 'block';
     } else {
