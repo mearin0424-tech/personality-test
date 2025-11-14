@@ -144,7 +144,7 @@ body {
     text-align: left;
 }
 
-/* --- ★修正4: 回答済み質問のスタイル★ --- */
+/* --- 回答済み質問のスタイル --- */
 .question.answered {
     background-color: #f4f4f5; /* 少しグレーに */
     opacity: 0.8; /* 少し薄く */
@@ -152,10 +152,8 @@ body {
 .question.answered p {
     color: #71717a; /* 文字も少し薄く */
 }
-/* --- ★ここまで★ --- */
 
-
-/* --- ★修正3: 5段階評価 (Likert Scale) ※全面差し替え★ --- */
+/* --- 5段階評価 (Likert Scale)  --- */
 .likert-scale {
     display: flex;
     justify-content: space-around;
@@ -201,7 +199,6 @@ body {
 .likert-scale input[value="3"]:checked + span { background: #C77DFF; color: #fff; border-color: #C77DFF; transform: scale(1.1); box-shadow: 0 4px 10px rgba(199,125,255, 0.4);}
 .likert-scale input[value="4"]:checked + span { background: #f472b6; color: #fff; border-color: #f472b6; transform: scale(1.1); box-shadow: 0 4px 10px rgba(244,114,182, 0.4);}
 .likert-scale input[value="5"]:checked + span { background: #ec4899; color: #fff; border-color: #ec4899; transform: scale(1.1); box-shadow: 0 4px 10px rgba(236,72,153, 0.4);}
-/* --- ★修正3 ここまで★ --- */
 
 .likert-labels { display: flex; justify-content: space-between; font-size: 0.85em; color: #796c8c; padding: 0 10px; }
 
