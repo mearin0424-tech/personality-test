@@ -1,15 +1,10 @@
-// ▼▼▼ Firebase SDKの読み込み (一番上) ▼▼▼
-importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js');
-// ▲▲▲
-
 // キャッシュのバージョン。中身を変えたらここも変える
 const CACHE_NAME = 'personality-test-cache-v1';
 
 // GitHub Pagesのリポジトリパス
 const REPO_PATH = '/personality-test/';
 
-// --- ★修正★ オフライン動作に必要なファイルを追加 ---
+// オフライン動作に必要なファイルを追加 ---
 const urlsToCache = [
   REPO_PATH + 'personality-test.html',
   REPO_PATH + 'style.css', // (※もし styles.css ならファイル名を修正)
