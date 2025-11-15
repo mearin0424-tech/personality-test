@@ -10,6 +10,7 @@ const REPO_PATH = '/personality-test/';
 // キャッシュするファイルのリスト
 const urlsToCache = [
   REPO_PATH + 'personality-test.html',
+  REPO_PATH + 'pwa-loader.js',
   REPO_PATH + 'styles.css',
   REPO_PATH + 'manifest.json',
   REPO_PATH + 'icons/icon-192x192.png',

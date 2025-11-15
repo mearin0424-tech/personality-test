@@ -9,13 +9,13 @@
     <meta property="og:description" content="あなたにピッタリな接客スタイルは？12の質問であなたの強みを診断します！" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mearin0424-tech.github.io/personality-test/personality-test.html" /> 
-    <meta property="og:image" content="https://https://mearin0424-tech.github.io/personality-test/images/og-image.png" />
+        <meta property="og:image" content="https://mearin0424-tech.github.io/personality-test/images/og-image.png" />
     <meta name="twitter:card" content="summary_large_image">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="/personality-test/manifest.json">
+        <link rel="manifest" href="/personality-test/manifest.json">
 </head>
 <body>
 
@@ -57,114 +57,11 @@
 
     </div>
 
-    <script src="script.js"></script>
+        <script src="script.js"></script>
     
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
 
-    <script>
-        const firebaseConfig = {
-         apiKey: "AIzaSyAQnHBsjvhSKiJP6pq5Ac5317tweEU8Kk8",
-         authDomain: "pwa-shindan-app.firebaseapp.com",
-         projectId: "pwa-shindan-app",
-         storageBucket: "pwa-shindan-app.firebasestorage.app",
-         messagingSenderId: "680889712921",
-         appId: "1:680889712921:web:4528445084a2d76ff44588",
-         measurementId: "G-5Q243BKXZL"
-        };
-
-        // Firebaseを初期化
-        firebase.initializeApp(firebaseConfig);
-        const messaging = firebase.messaging();
-
-        // 通知の許可をリクエストする関数
-        function requestNotificationPermission() {
-            console.log('通知の許可をリクエストします...');
-            
-            Notification.requestPermission() 
-                .then((permission) => {
-                    // permission には 'granted'（許可）か 'denied'（拒否）が入ります
-                    if (permission === 'granted') {
-                        console.log('通知の許可が得られました。');
-                        // 許可された場合のみ、トークンを取得します
-                        return getFcmToken();
-                    } else {
-                        console.log('通知の許可が得られませんでした。');
-                    }
-                })
-                .catch((err) => {
-                    // (まれに) リクエスト自体にエラーが起きた場合
-                    console.log('通知の許可リクエスト中にエラーが発生しました。', err);
-                });
-        }
-
-        // 宛先ID（トークン）を取得する関数
-        function getFcmToken() {
-            // あなたのVAPIDキー（これはそのままでOK）
-            const VAPID_KEY = "BC3eV001Pt3fT11KqKJQVGo95jq5DAuU64mJUtcR4Xa-oRhT6gaExcA_eri4AMc9IWvYicPLVcImAF4fU4MCwhk";
-
-            // 1. まず、REPO_PATHスコープで登録されているSW登録情報を取得
-            // ( REPO_PATH = '/personality-test/' は既に定義されているはず)
-            navigator.serviceWorker.getRegistration(REPO_PATH)
-                .then((registration) => {
-                    
-                    if (!registration) {
-                        console.error('サービスワーカーの登録が見つかりません。');
-                        console.error('REPO_PATH が正しいか確認してください:', REPO_PATH);
-                        // sw.jsの登録自体が失敗している可能性があります
-                        return Promise.reject('Service Worker not registered');
-                    }
-                    
-                    console.log('Service Worker 登録情報を取得:', registration);
-                    
-                    // 2. 取得した登録情報を明示的に指定してトークンを要求
-                    return messaging.getToken({ 
-                        vapidKey: VAPID_KEY,
-                        serviceWorkerRegistration: registration // ★この行が重要
-                    });
-                })
-                .then((currentToken) => {
-                    if (currentToken) {
-                        console.log('FCM 宛先ID (トークン): ', currentToken);
-                    } else {
-                        // 許可はされたが、何らかの理由でトークンが発行されなかった
-                        console.log('トークンが取得できませんでした。');
-                    }
-                })
-                .catch((err) => {
-                    // ★デバッグのため、エラー詳細を出力
-                    console.error('トークンの取得中にエラーが発生しました。詳細:', err);
-                });
-        }
-        
-        // 既存のDOMContentLoadedイベントに許可を求める処理を追加
-        document.addEventListener('DOMContentLoaded', () => {
-            // ... (既存の処理) ...
-
-            // スタートボタンが押されたら、通知の許可を求める
-            document.getElementById('start-btn').addEventListener('click', () => {
-                // ... (既存の画面切り替え処理) ...
-                
-                // 画面切り替えの後に、許可をリクエスト
-                requestNotificationPermission();
-            });
-        });
-    </script>
-
-    <script>
-        const REPO_PATH = '/personality-test/';
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                // PWAが動作する範囲を指定
-                navigator.serviceWorker.register(REPO_PATH + 'sw.js', { scope: REPO_PATH })
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-    </script>
-</body>
+            <script src="pwa-loader.js"></script>
+    </body>
 </html>
