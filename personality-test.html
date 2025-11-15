@@ -9,13 +9,13 @@
     <meta property="og:description" content="あなたにピッタリな接客スタイルは？12の質問であなたの強みを診断します！" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mearin0424-tech.github.io/personality-test/personality-test.html" /> 
-        <meta property="og:image" content="https://mearin0424-tech.github.io/personality-test/images/og-image.png" />
+    <meta property="og:image" content="https://mearin0424-tech.github.io/personality-test/images/og-image.png" />
     <meta name="twitter:card" content="summary_large_image">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     
     <link rel="stylesheet" href="style.css">
-        <link rel="manifest" href="/personality-test/manifest.json">
+    <link rel="manifest" href="/personality-test/manifest.json">
 </head>
 <body>
 
@@ -32,7 +32,15 @@
             <img src="https://mearin0424-tech.github.io/personality-test/images/top_image.png" alt="トップ画像" id="top-image">
             <br><br>
             <button id="start-btn" disabled>読み込み中...</button>
-        </div>
+
+            <button id="notification-test-btn" class="btn-back-to-top" style="position: static; display: block; margin: 15px auto 0 auto; width: 100%; max-width: 300px;">
+                通知テスト
+            </button>
+            <textarea id="token-display-area" style="display: none; width: 100%; margin-top: 20px; box-sizing: border-box; font-size: 12px; border: 1px solid #c5b5e6; border-radius: 8px; padding: 10px;" rows="4" readonly></textarea>
+            <p id="token-info" style="display: none; font-size: 0.9em; color: #6A4C9C; text-align: center; margin-top: 10px; line-height: 1.6;">
+                表示されたトークンを開発者に連携してください。<br>アプリを閉じて、通知を待ってね。
+            </p>
+            </div>
 
         <form id="shindan-form">
             <h2 class="form-title">接客タイプ診断</h2>
@@ -57,9 +65,12 @@
 
     </div>
 
-        <script src="script.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
-        <script src="pwa-loader.js"></script>
-    </body>
+    <script src="script.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
+
+    <script src="pwa-loader.js"></script>
+
+</body>
 </html>
