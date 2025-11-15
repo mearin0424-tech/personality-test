@@ -66,12 +66,19 @@ document.addEventListener('DOMContentLoaded', () => {
     startBtn.addEventListener('click', () => {
         startScreen.style.display = 'none'; // スタート画面を非表示
         shindanForm.style.display = 'block'; // 診断フォームを表示
+        backToTopBtn.style.display = 'block'; // トップに戻るボタンを表示
         // 画面の先頭にスクロール
         document.getElementById('shindan-app').scrollIntoView({ behavior: 'smooth' });
     });
 
     // トップに戻るボタンのクリックイベント
     backToTopBtn.addEventListener('click', resetToStart);
+
+    // 0.3秒後（少し間を置いて）アニメーションを開始
+    setTimeout(() => {
+        // .titleクラスを持つ要素を探して、.visibleクラスを追加
+        document.querySelector('.title').classList.add('visible');
+    }, 300); // 300ミリ秒 = 0.3秒
 });
 
 // --- 2. 必要なCSVファイルをすべて読み込む ---
@@ -213,6 +220,7 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
     document.getElementById('shindan-form').style.display = 'none';
     const resultEl = document.getElementById('result');
     resultEl.style.display = 'block';
+    backToTopBtn.style.display = 'block'; // トップに戻るボタンを表示
 
     // 結果の表示
     const result = resultData[type] || resultData["DEFAULT"];

@@ -52,6 +52,47 @@ body {
     margin-bottom: 40px;
 }
 
+/* --- タイトルのスライドアニメーション --- */
+
+/* 親要素 (h1.title) */
+.title {
+    /* 重要：はみ出した子要素を隠す */
+    overflow: hidden; 
+    
+    /* 初期状態：左に100%移動（画面外へ） */
+    transform: translateX(-100%);
+    
+    /* アニメーション：0.8秒かけてゆっくり変化 */
+    transition: transform 0.8s ease-out; 
+}
+
+/* 子要素 (h1.title > span) */
+.title span {
+    /* transformを適用するためブロック要素に */
+    display: block; 
+    
+    /* 初期状態：右に100%移動（親要素の枠外へ） */
+    transform: translateX(100%);
+    
+    /* アニメーション：親と合わせる */
+    transition: transform 0.8s ease-out; 
+}
+
+/* --- アニメーション実行 --- */
+
+/* .visibleクラスが親(h1.title)に追加された時 */
+.title.visible {
+    /* 親要素を元の位置(0)に戻す */
+    transform: translateX(0);
+}
+
+/* .visibleクラスが親に追加された時（子要素） */
+.title.visible span {
+    /* 子要素も元の位置(0)に戻す */
+    transform: translateX(0);
+}
+
+
 /* --- トップ画像スタイル★ --- */
 #top-image {
     max-width: 80%; /* 幅を調整 */
