@@ -84,10 +84,11 @@ async function getFcmToken() {
 
         if (currentToken) {
             console.log('FCM 宛先ID (トークン): ', currentToken);
+            // トークンをユーザーに表示（よくないけど、テスト用）
+            prompt("以下のトークンをコピーしてPCに送ってください:", currentToken);
         } else {
             console.log('トークンが取得できませんでした。');
         }
-        prompt("以下のトークンをコピーしてPCに送ってください:", currentToken);
     } catch (err) {
         console.error('トークンの取得中にエラーが発生しました。詳細:', err);
     }
