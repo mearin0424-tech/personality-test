@@ -76,35 +76,39 @@
         // Firebaseを初期化
         firebase.initializeApp(firebaseConfig);
         const messaging = firebase.messaging();
-        // ... (messaging の定義の直後)
 
         // 通知の許可をリクエストする関数
         function requestNotificationPermission() {
             console.log('通知の許可をリクエストします...');
-            messaging.requestPermission()
-                .then(() => {
-                    console.log('通知の許可が得られました。');
-                    // 宛先ID（トークン）を取得します
-                    return getFcmToken();
+            
+            Notification.requestPermission() 
+                .then((permission) => {
+                    // permission には 'granted'（許可）か 'denied'（拒否）が入ります
+                    if (permission === 'granted') {
+                        console.log('通知の許可が得られました。');
+                        // 許可された場合のみ、トークンを取得します
+                        return getFcmToken();
+                    } else {
+                        console.log('通知の許可が得られませんでした。');
+                    }
                 })
                 .catch((err) => {
-                    console.log('通知の許可が得られませんでした。', err);
+                    // (まれに) リクエスト自体にエラーが起きた場合
+                    console.log('通知の許可リクエスト中にエラーが発生しました。', err);
                 });
         }
 
         // 宛先ID（トークン）を取得する関数
         function getFcmToken() {
 
-            // Firebaseコンソール > 右上の歯車 > プロジェクトの設定
-            // > 「クラウド メッセージング」タブ >「ウェブプッシュ証明書」の「キーペア」
+            // FireBaseコンソールで取得したVAPIDキーを指定
             const VAPID_KEY = "BC3eV001Pt3fT11KqKJQVGo95jq5DAuU64mJUtcR4Xa-oRhT6gaExcA_eri4AMc9IWvYicPLVcImAF4fU4MCwhk";
 
             messaging.getToken({ vapidKey: VAPID_KEY })
                 .then((currentToken) => {
                     if (currentToken) {
                         console.log('FCM 宛先ID (トークン): ', currentToken);
-                        // 本来はこのトークンをサーバーに保存しますが、
-                        // まずはコンソールに表示させてテストに使います。
+                        // ...
                     } else {
                         console.log('トークンが取得できませんでした。');
                     }

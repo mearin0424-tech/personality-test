@@ -45,15 +45,15 @@ self.addEventListener('fetch', (event) => {
 });
 
 // Firebase設定（HTML側と同じ）
-        const firebaseConfig = {
-         apiKey: "AIzaSyAQnHBsjvhSKiJP6pq5Ac5317tweEU8Kk8",
-         authDomain: "pwa-shindan-app.firebaseapp.com",
-         projectId: "pwa-shindan-app",
-         storageBucket: "pwa-shindan-app.firebasestorage.app",
-         messagingSenderId: "680889712921",
-         appId: "1:680889712921:web:4528445084a2d76ff44588",
-         measurementId: "G-5Q243BKXZL"
-        };
+  const firebaseConfig = {
+     apiKey: "AIzaSyAQnHBsjvhSKiJP6pq5Ac5317tweEU8Kk8",
+     authDomain: "pwa-shindan-app.firebaseapp.com",
+     projectId: "pwa-shindan-app",
+     storageBucket: "pwa-shindan-app.firebasestorage.app",
+     messagingSenderId: "680889712921",
+     appId: "1:680889712921:web:4528445084a2d76ff44588",
+     measurementId: "G-5Q243BKXZL"
+   };
 
 // Firebaseを初期化
 firebase.initializeApp(firebaseConfig);
