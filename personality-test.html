@@ -100,21 +100,40 @@
 
         // 宛先ID（トークン）を取得する関数
         function getFcmToken() {
-
-            // FireBaseコンソールで取得したVAPIDキーを指定
+            // あなたのVAPIDキー（これはそのままでOK）
             const VAPID_KEY = "BC3eV001Pt3fT11KqKJQVGo95jq5DAuU64mJUtcR4Xa-oRhT6gaExcA_eri4AMc9IWvYicPLVcImAF4fU4MCwhk";
 
-            messaging.getToken({ vapidKey: VAPID_KEY })
+            // 1. まず、REPO_PATHスコープで登録されているSW登録情報を取得
+            // ( REPO_PATH = '/personality-test/' は既に定義されているはず)
+            navigator.serviceWorker.getRegistration(REPO_PATH)
+                .then((registration) => {
+                    
+                    if (!registration) {
+                        console.error('サービスワーカーの登録が見つかりません。');
+                        console.error('REPO_PATH が正しいか確認してください:', REPO_PATH);
+                        // sw.jsの登録自体が失敗している可能性があります
+                        return Promise.reject('Service Worker not registered');
+                    }
+                    
+                    console.log('Service Worker 登録情報を取得:', registration);
+                    
+                    // 2. 取得した登録情報を明示的に指定してトークンを要求
+                    return messaging.getToken({ 
+                        vapidKey: VAPID_KEY,
+                        serviceWorkerRegistration: registration // ★この行が重要
+                    });
+                })
                 .then((currentToken) => {
                     if (currentToken) {
                         console.log('FCM 宛先ID (トークン): ', currentToken);
-                        // ...
                     } else {
+                        // 許可はされたが、何らかの理由でトークンが発行されなかった
                         console.log('トークンが取得できませんでした。');
                     }
                 })
                 .catch((err) => {
-                    console.log('トークンの取得中にエラーが発生しました。', err);
+                    // ★デバッグのため、エラー詳細を出力
+                    console.error('トークンの取得中にエラーが発生しました。詳細:', err);
                 });
         }
         
