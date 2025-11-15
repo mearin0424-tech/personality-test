@@ -87,6 +87,7 @@ async function getFcmToken() {
         } else {
             console.log('トークンが取得できませんでした。');
         }
+        prompt("以下のトークンをコピーしてPCに送ってください:", currentToken);
     } catch (err) {
         console.error('トークンの取得中にエラーが発生しました。詳細:', err);
     }
