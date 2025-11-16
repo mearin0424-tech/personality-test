@@ -9,7 +9,28 @@ const axisDescriptions = {
     'I': { title: '懐（ふところ）型 (I)', text: '「人懐っこさ」や「素の自分」を見せ、短時間でお客様の懐に飛び込むのが得意なタイプです。' },
     'O': { title: '領域（テリトリー）型 (O)', text: '「プロとしての距離感」を保ち、「憧れ」や「ミステリアスさ」を演出するのが得意なタイプです。' },
     'H': { title: 'ハンター型 (H)', text: '「瞬発力」で、イベントなど短期集中的に大きな結果を出すのが得意なタイプです。' },
-    'Fa': { title: 'ファーマー型 (F)', text: '「マメな連絡」や「継続力」で、お客様との関係をじっくり育てるのが得意なタイプです。' }
+    'R': { title: 'リレーション型 (R)', text: '「マメな連絡」や「継続力」で、お客様との関係をじっくり育てるのが得意なタイプです。' } 
+};
+
+// ★追加★ 弱点の定義 (Weakness)
+const weaknessData = {
+    'LPIR': '頼られすぎて疲弊しやすいです。また、一歩引いて静かに待つような受け身の接客は不得意です。',
+    'FCIH': '長期的な関係構築が苦手で、急な来店が減ると一気に売上も落ちる傾向があります。また、同性からの支持は得にくいかもしれません。',
+    'LPOR': '完璧主義が邪魔をして、お客様の「隙」や「弱み」に共感しにくいです。高い目標を持つお客様以外には壁を感じさせてしまうことがあります。',
+    'FPOR': '受け身になりすぎて会話をリードできず、お客様を退屈にさせてしまうことがあります。異性としての魅力(C)での勝負は難しいでしょう。',
+    'FPOH': '感情表現が乏しく見え、冷たい印象を持たれやすいです。長期的に顧客を「育てる」作業には忍耐力が必要です。',
+    'FPIR': '友達のような関係になりすぎて、色恋的な緊張感が生まれにくいです。お客様の要求を断れず、尽くしすぎる傾向があります。',
+    'FPIH': '自分のペースを崩せず、マメさ(R)を求めるお客様は離れていきます。本質的に自由なので、組織的な動きは苦手かもしれません。',
+    'FCOR': '敷居が高く、新規のお客様が指名しにくいです。感情的な起伏が少なく、近寄りがたい印象を与えがちです。',
+    'FCOH': '連絡が来ないことに不安を感じるお客様を切り捨てがちです。感情の交流を求めてくるお客様には対応が難しいでしょう。',
+    'FCIR': 'お客様のペースに合わせすぎ、自己主張ができないことがあります。尽くしすぎて、対等な関係を築くのが難しいです。',
+    'LPOH': 'カリスマ性が高すぎて、お客様に「自分にはもったいない」と感じさせてしまうことがあります。親しみやすさに欠けます。',
+    'LPIH': '楽しさが優先され、お客様の深い悩みや感情を汲み取るのが苦手です。勢いで売上を上げるため、安定感に欠けることがあります。',
+    'LCOR': '融通が利かない印象を持たれやすいです。お客様の小さな失敗や失言を許せず、プレッシャーを与えてしまうことがあります。',
+    'LCOH': '高圧的な印象を与えやすく、お客様を緊張させてしまうことがあります。マメさがなく、一度離れたお客様は戻ってきにくいです。',
+    'LCIR': '押しが強く、お客様のペースを乱してしまうことがあります。甘え上手ゆえに、わがままに見えてしまうこともあります。',
+    'LCIH': '楽しすぎるがゆえに、落ち着いた接客や深い話をするのが苦手です。衝動的な接客になりやすく、計画性がないです。',
+    'DEFAULT': 'どのタイプにも偏らず、強みが発揮しにくい可能性があります。専門家のアドバイスを求めることをおすすめします。'
 };
 
 // --- 1. アプリの初期化処理 ---
@@ -20,14 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultScreen = document.getElementById('result');
     const startBtn = document.getElementById('start-btn');
     
-    // ▼▼▼ 修正: 通知テストボタンを除外して取得する ▼▼▼
+    // 通知テストボタンを除外して「トップに戻る」ボタンを取得
     const backToTopBtns = document.querySelectorAll('.btn-back-to-top:not(#notification-test-btn)'); 
 
     // 念のため、JSでも初期状態をセット
     startScreen.style.display = 'block';
     shindanForm.style.display = 'none';
     resultScreen.style.display = 'none';
-    // 「トップに戻る」ボタンのみ非表示 (通知テストボタンはHTMLのインラインスタイルで表示される)
     backToTopBtns.forEach(btn => btn.style.display = 'none'); 
 
     // スタート画面に戻る（リセットする）関数
@@ -38,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultScreen.style.display = 'none';
         backToTopBtns.forEach(btn => btn.style.display = 'none'); // トップ画面では非表示
 
-        // ▼▼▼ 追加: トークン表示UIを非表示に戻す ▼▼▼
+        // トークン表示UIを非表示に戻す
         const tokenArea = document.getElementById('token-display-area');
         const tokenInfo = document.getElementById('token-info');
         if (tokenArea) tokenArea.style.display = 'none';
@@ -54,9 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         // 既存の結果表示を念のためクリア
-        document.getElementById('result-type').textContent = '';
-        document.getElementById('result-title').textContent = '';
-        document.getElementById('result-breakdown').innerHTML = '';
+        // ★修正: 該当IDの要素をクリア
+        document.querySelector('#result-type-title').textContent = '';
+        document.querySelector('#result-strength').textContent = '';
+        document.querySelector('#result-weakness').textContent = ''; // ★追加
+        document.querySelector('#result-description').innerHTML = ''; // ★追加
+        document.querySelector('#result-breakdown').innerHTML = '';
         document.getElementById('result-image').style.display = 'none';
 
         // 画面の先頭にスクロール
@@ -77,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 0.3秒後（少し間を置いて）アニメーションを開始
     setTimeout(() => {
-        // .titleクラスを持つ要素を探して、.visibleクラスを追加
         document.querySelector('.title').classList.add('visible');
     }, 300); // 300ミリ秒 = 0.3秒
 
@@ -189,7 +211,7 @@ function setupAnsweredListener() {
 document.getElementById('shindan-form').addEventListener('submit', function(event) {
     event.preventDefault(); 
     const REPO_PATH = '/personality-test/'; 
-    const backToTopBtns = document.querySelectorAll('.btn-back-to-top:not(#notification-test-btn)'); // notification-test-btn は含めない
+    const backToTopBtns = document.querySelectorAll('.btn-back-to-top:not(#notification-test-btn)'); 
 
     const formData = new FormData(event.target);
     const answers = Object.fromEntries(formData.entries());
@@ -220,33 +242,43 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
         (scores.axis1.A > scores.axis1.B) ? 'L' : 'F',
         (scores.axis2.A > scores.axis2.B) ? 'C' : 'P',
         (scores.axis3.A > scores.axis3.B) ? 'I' : 'O',
-        (scores.axis4.A > scores.axis4.B) ? 'H' : 'Fa' 
+        (scores.axis4.A > scores.axis4.B) ? 'H' : 'R' 
     ].join('');
 
     // フォームを非表示にし、結果を表示
     document.getElementById('shindan-form').style.display = 'none';
     const resultEl = document.getElementById('result');
     resultEl.style.display = 'block';
-    backToTopBtns.forEach(btn => btn.style.display = 'block'); // トップに戻るボタンを表示
+    backToTopBtns.forEach(btn => btn.style.display = 'block'); 
 
-    // 結果の表示
+    // 結果の取得
     const result = resultData[type] || resultData["DEFAULT"];
-    resultEl.querySelector('#result-type').textContent = type;
-    resultEl.querySelector('#result-title').textContent = result.title;
-    resultEl.querySelector('#result-description').innerHTML = result.description.replace(/\n/g, '<br>');
-    resultEl.querySelector('#result-strength').textContent = result.strength;
+    const weakness = weaknessData[type] || weaknessData["DEFAULT"]; // ★弱点を取得
 
-    // イラスト表示ロジック
+    // ★修正: 結果の表示ロジックを全面的に変更
+    
+    // 1. タイプの表示
+    resultEl.querySelector('#result-type-title').innerHTML = `(${type}) ${result.title}`;
+    
+    // 2. 画像表示 (既存ロジックは流用)
     const resultImage = resultEl.querySelector('#result-image');
     if (result.title !== "診断不能タイプ") {
-        // GitHub Pagesのパスを考慮
         resultImage.src = REPO_PATH + 'images/kotowaza_buta_shinju.png';
         resultImage.alt = result.title;
         resultImage.style.display = 'block';
     } else {
         resultImage.style.display = 'none';
     }
-
+    
+    // 3. 強み
+    resultEl.querySelector('#result-strength').textContent = result.strength;
+    
+    // 4. ニガテ
+    resultEl.querySelector('#result-weakness').textContent = weakness; 
+    
+    // 5. 詳細説明
+    resultEl.querySelector('#result-description').innerHTML = result.description.replace(/\n/g, '<br>');
+    
     // 4軸の解説の動的生成
     const breakdownEl = resultEl.querySelector('#result-breakdown');
     breakdownEl.innerHTML = ''; // 既存の内容をクリア
@@ -259,9 +291,12 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
 
     [desc1, desc2, desc3, desc4].forEach(desc => {
         if(desc) { 
+            // 4軸目の軸タイトルがRの場合、表示文字をRに修正
+            const axisChar = desc.title.includes('(R)') ? 'R' : desc.title.match(/[A-Z]/)[0];
+
             breakdownEl.innerHTML += `
                 <div class="breakdown-item">
-                    <span>${desc.title.match(/[A-Z]/)[0]}</span>
+                    <span>${axisChar}</span>
                     <p><strong>${desc.title}</strong>${desc.text}</p>
                 </div>
             `;
