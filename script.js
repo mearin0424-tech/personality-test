@@ -30,7 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
     backToTopBtns.forEach(btn => btn.style.display = 'none'); 
 
     // スタート画面に戻る（リセットする）関数
-    function resetToStart() {
+    function resetToStart(event) { // ★修正1: eventを受け取る
+        // ★修正2: デフォルトの動作（フォーム送信）を明示的に防止
+        if (event) { 
+            event.preventDefault(); 
+        }
+
         // 画面切り替え
         startScreen.style.display = 'block';
         shindanForm.style.display = 'none';
@@ -73,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('shindan-app').scrollIntoView({ behavior: 'smooth' });
     });
 
-    // トップに戻るボタンのクリックイベント (両方のボタンに設定)
+    // トップに戻るボタンのクリックイベント
     backToTopBtns.forEach(btn => btn.addEventListener('click', resetToStart));
 
     // 0.3秒後（少し間を置いて）アニメーションを開始
@@ -196,6 +201,8 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
     const formData = new FormData(event.target);
     const answers = Object.fromEntries(formData.entries());
 
+    // ★修正★ ここがsubmitボタンを押したときのバリデーション。
+    // 「トップに戻る」ボタンからは絶対に呼ばれないように修正されました。
     if (Object.keys(answers).length < questionData.length) {
         alert("すべての質問に回答してください。");
         return;
@@ -222,7 +229,7 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
         (scores.axis1.A > scores.axis1.B) ? 'L' : 'F',
         (scores.axis2.A > scores.axis2.B) ? 'C' : 'P',
         (scores.axis3.A > scores.axis3.B) ? 'I' : 'O',
-        (scores.axis4.A > scores.axis4.B) ? 'H' : 'R' // ★修正: Fa -> R
+        (scores.axis4.A > scores.axis4.B) ? 'H' : 'R' 
     ].join('');
 
     // フォームを非表示にし、結果を表示
@@ -233,15 +240,11 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
 
     // 結果の取得
     const result = resultData[type] || resultData["DEFAULT"];
-    // ★修正★ weakness を resultData から直接取得
     const weakness = result.weakness; 
 
     // 結果の表示
-    
-    // 1. タイプの表示
     resultEl.querySelector('#result-type-title').innerHTML = `(${type}) ${result.title}`;
     
-    // 2. 画像表示 
     const resultImage = resultEl.querySelector('#result-image');
     if (result.title !== "診断不能タイプ") {
         resultImage.src = REPO_PATH + 'images/kotowaza_buta_shinju.png';
@@ -251,18 +254,13 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
         resultImage.style.display = 'none';
     }
     
-    // 3. 強み
     resultEl.querySelector('#result-strength').textContent = result.strength;
-    
-    // 4. ニガテ
     resultEl.querySelector('#result-weakness').textContent = weakness; 
-    
-    // 5. 詳細説明
     resultEl.querySelector('#result-description').innerHTML = result.description.replace(/\n/g, '<br>');
     
     // 4軸の解説の動的生成
     const breakdownEl = resultEl.querySelector('#result-breakdown');
-    breakdownEl.innerHTML = ''; // 既存の内容をクリア
+    breakdownEl.innerHTML = ''; 
     const typeChars = type.split('');
     
     const desc1 = axisDescriptions[typeChars[0]]; 
@@ -272,7 +270,6 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
 
     [desc1, desc2, desc3, desc4].forEach(desc => {
         if(desc) { 
-            // 軸タイトルが R の場合、表示文字も R に修正
             const axisChar = desc.title.includes('(R)') ? 'R' : desc.title.match(/[A-Z]/)[0];
 
             breakdownEl.innerHTML += `
