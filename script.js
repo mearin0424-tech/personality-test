@@ -9,7 +9,6 @@ const axisDescriptions = {
     'I': { title: '懐（ふところ）型 (I)', text: '「人懐っこさ」や「素の自分」を見せ、短時間でお客様の懐に飛び込むのが得意なタイプです。' },
     'O': { title: '領域（テリトリー）型 (O)', text: '「プロとしての距離感」を保ち、「憧れ」や「ミステリアスさ」を演出するのが得意なタイプです。' },
     'H': { title: 'ハンター型 (H)', text: '「瞬発力」で、イベントなど短期集中的に大きな結果を出すのが得意なタイプです。' },
-    // 4軸目の 'F' (Farmer)
     'Fa': { title: 'ファーマー型 (F)', text: '「マメな連絡」や「継続力」で、お客様との関係をじっくり育てるのが得意なタイプです。' }
 };
 
@@ -21,18 +20,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultScreen = document.getElementById('result');
     const startBtn = document.getElementById('start-btn');
     
-    // "トップに戻る" ボタンを両方のフォーム/結果から取得 (CSSでの制御のため)
-    const backToTopBtns = document.querySelectorAll('.btn-back-to-top');
+    // ▼▼▼ 修正: 通知テストボタンを除外して取得する ▼▼▼
+    const backToTopBtns = document.querySelectorAll('.btn-back-to-top:not(#notification-test-btn)'); 
 
     // 念のため、JSでも初期状態をセット
     startScreen.style.display = 'block';
     shindanForm.style.display = 'none';
     resultScreen.style.display = 'none';
-    backToTopBtns.forEach(btn => btn.style.display = 'none');
+    // 「トップに戻る」ボタンのみ非表示 (通知テストボタンはHTMLのインラインスタイルで表示される)
+    backToTopBtns.forEach(btn => btn.style.display = 'none'); 
 
-    // CSVの読み込みと質問の生成を先に行う
-    loadAllData(startBtn);
-    
     // スタート画面に戻る（リセットする）関数
     function resetToStart() {
         // 画面切り替え
@@ -41,6 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
         resultScreen.style.display = 'none';
         backToTopBtns.forEach(btn => btn.style.display = 'none'); // トップ画面では非表示
 
+        // ▼▼▼ 追加: トークン表示UIを非表示に戻す ▼▼▼
+        const tokenArea = document.getElementById('token-display-area');
+        const tokenInfo = document.getElementById('token-info');
+        if (tokenArea) tokenArea.style.display = 'none';
+        if (tokenInfo) tokenInfo.style.display = 'none';
+        
         // フォームをリセット (選択を解除)
         shindanForm.reset();
 
@@ -77,12 +80,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // .titleクラスを持つ要素を探して、.visibleクラスを追加
         document.querySelector('.title').classList.add('visible');
     }, 300); // 300ミリ秒 = 0.3秒
+
+    // 最初にデータをロード
+    loadAllData(startBtn);
 });
 
 // --- 2. 必要なCSVファイルをすべて読み込む ---
-async function loadAllData(startBtn) { // startBtnを引数で受け取る
+async function loadAllData(startBtn) { 
     try {
-        const REPO_PATH = '/personality-test/'; // script.js内でもパスを定義
+        const REPO_PATH = '/personality-test/'; 
         const [questions, results] = await Promise.all([
             loadCSV(REPO_PATH + 'questions.csv'),
             loadCSV(REPO_PATH + 'results.csv')
@@ -129,7 +135,7 @@ function loadCSV(url) {
 // --- 4. 5段階評価の質問フォームを動的に生成する ---
 function generateQuestionsHTML() {
     const form = document.getElementById('shindan-form');
-    const loadingEl = form.querySelector('#loading'); // form内のloadingを取得
+    const loadingEl = form.querySelector('#loading'); 
     const submitBtn = form.querySelector('#submit-btn');
     
     let htmlContent = '';
@@ -182,8 +188,8 @@ function setupAnsweredListener() {
 // --- 5. 診断実行 (フォーム送信時の処理) ---
 document.getElementById('shindan-form').addEventListener('submit', function(event) {
     event.preventDefault(); 
-    const REPO_PATH = '/personality-test/'; // 画像パスのためにここでも定義
-    const backToTopBtns = document.querySelectorAll('.btn-back-to-top');
+    const REPO_PATH = '/personality-test/'; 
+    const backToTopBtns = document.querySelectorAll('.btn-back-to-top:not(#notification-test-btn)'); // notification-test-btn は含めない
 
     const formData = new FormData(event.target);
     const answers = Object.fromEntries(formData.entries());
@@ -214,7 +220,7 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
         (scores.axis1.A > scores.axis1.B) ? 'L' : 'F',
         (scores.axis2.A > scores.axis2.B) ? 'C' : 'P',
         (scores.axis3.A > scores.axis3.B) ? 'I' : 'O',
-        (scores.axis4.A > scores.axis4.B) ? 'H' : 'Fa' // 'F' (Farmer) -> 'Fa' に変更
+        (scores.axis4.A > scores.axis4.B) ? 'H' : 'Fa' 
     ].join('');
 
     // フォームを非表示にし、結果を表示
@@ -233,7 +239,6 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
     // イラスト表示ロジック
     const resultImage = resultEl.querySelector('#result-image');
     if (result.title !== "診断不能タイプ") {
-        //★WIP★ 画像が用意できないので一時的にべた書き
         // GitHub Pagesのパスを考慮
         resultImage.src = REPO_PATH + 'images/kotowaza_buta_shinju.png';
         resultImage.alt = result.title;
@@ -247,14 +252,13 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
     breakdownEl.innerHTML = ''; // 既存の内容をクリア
     const typeChars = type.split('');
     
-    // 'F' と 'Fa' を正しく参照するように修正
-    const desc1 = axisDescriptions[typeChars[0]]; // L or F
-    const desc2 = axisDescriptions[typeChars[1]]; // C or P
-    const desc3 = axisDescriptions[typeChars[2]]; // I or O
-    const desc4 = axisDescriptions[typeChars[3]]; // H or Fa
+    const desc1 = axisDescriptions[typeChars[0]]; 
+    const desc2 = axisDescriptions[typeChars[1]]; 
+    const desc3 = axisDescriptions[typeChars[2]]; 
+    const desc4 = axisDescriptions[typeChars[3]]; 
 
     [desc1, desc2, desc3, desc4].forEach(desc => {
-        if(desc) { // 念のため desc が存在するかチェック
+        if(desc) { 
             breakdownEl.innerHTML += `
                 <div class="breakdown-item">
                     <span>${desc.title.match(/[A-Z]/)[0]}</span>
