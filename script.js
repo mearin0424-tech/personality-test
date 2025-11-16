@@ -12,27 +12,6 @@ const axisDescriptions = {
     'R': { title: 'リレーション型 (R)', text: '「マメな連絡」や「継続力」で、お客様との関係をじっくり育てるのが得意なタイプです。' } 
 };
 
-// ★追加★ 弱点の定義 (Weakness)
-const weaknessData = {
-    'LPIR': '頼られすぎて疲弊しやすいです。また、一歩引いて静かに待つような受け身の接客は不得意です。',
-    'FCIH': '長期的な関係構築が苦手で、急な来店が減ると一気に売上も落ちる傾向があります。また、同性からの支持は得にくいかもしれません。',
-    'LPOR': '完璧主義が邪魔をして、お客様の「隙」や「弱み」に共感しにくいです。高い目標を持つお客様以外には壁を感じさせてしまうことがあります。',
-    'FPOR': '受け身になりすぎて会話をリードできず、お客様を退屈にさせてしまうことがあります。異性としての魅力(C)での勝負は難しいでしょう。',
-    'FPOH': '感情表現が乏しく見え、冷たい印象を持たれやすいです。長期的に顧客を「育てる」作業には忍耐力が必要です。',
-    'FPIR': '友達のような関係になりすぎて、色恋的な緊張感が生まれにくいです。お客様の要求を断れず、尽くしすぎる傾向があります。',
-    'FPIH': '自分のペースを崩せず、マメさ(R)を求めるお客様は離れていきます。本質的に自由なので、組織的な動きは苦手かもしれません。',
-    'FCOR': '敷居が高く、新規のお客様が指名しにくいです。感情的な起伏が少なく、近寄りがたい印象を与えがちです。',
-    'FCOH': '連絡が来ないことに不安を感じるお客様を切り捨てがちです。感情の交流を求めてくるお客様には対応が難しいでしょう。',
-    'FCIR': 'お客様のペースに合わせすぎ、自己主張ができないことがあります。尽くしすぎて、対等な関係を築くのが難しいです。',
-    'LPOH': 'カリスマ性が高すぎて、お客様に「自分にはもったいない」と感じさせてしまうことがあります。親しみやすさに欠けます。',
-    'LPIH': '楽しさが優先され、お客様の深い悩みや感情を汲み取るのが苦手です。勢いで売上を上げるため、安定感に欠けることがあります。',
-    'LCOR': '融通が利かない印象を持たれやすいです。お客様の小さな失敗や失言を許せず、プレッシャーを与えてしまうことがあります。',
-    'LCOH': '高圧的な印象を与えやすく、お客様を緊張させてしまうことがあります。マメさがなく、一度離れたお客様は戻ってきにくいです。',
-    'LCIR': '押しが強く、お客様のペースを乱してしまうことがあります。甘え上手ゆえに、わがままに見えてしまうこともあります。',
-    'LCIH': '楽しすぎるがゆえに、落ち着いた接客や深い話をするのが苦手です。衝動的な接客になりやすく、計画性がないです。',
-    'DEFAULT': 'どのタイプにも偏らず、強みが発揮しにくい可能性があります。専門家のアドバイスを求めることをおすすめします。'
-};
-
 // --- 1. アプリの初期化処理 ---
 document.addEventListener('DOMContentLoaded', () => {
     // 画面要素を取得
@@ -74,11 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         // 既存の結果表示を念のためクリア
-        // ★修正: 該当IDの要素をクリア
         document.querySelector('#result-type-title').textContent = '';
         document.querySelector('#result-strength').textContent = '';
-        document.querySelector('#result-weakness').textContent = ''; // ★追加
-        document.querySelector('#result-description').innerHTML = ''; // ★追加
+        document.querySelector('#result-weakness').textContent = ''; 
+        document.querySelector('#result-description').innerHTML = ''; 
         document.querySelector('#result-breakdown').innerHTML = '';
         document.getElementById('result-image').style.display = 'none';
 
@@ -122,7 +100,9 @@ async function loadAllData(startBtn) {
                 resultData[row.type] = {
                     title: row.title,
                     description: row.description,
-                    strength: row.strength
+                    strength: row.strength,
+                    // ★修正★ weaknessもCSVから取得し、resultDataに格納
+                    weakness: row.weakness 
                 };
             }
         });
@@ -242,7 +222,7 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
         (scores.axis1.A > scores.axis1.B) ? 'L' : 'F',
         (scores.axis2.A > scores.axis2.B) ? 'C' : 'P',
         (scores.axis3.A > scores.axis3.B) ? 'I' : 'O',
-        (scores.axis4.A > scores.axis4.B) ? 'H' : 'R' 
+        (scores.axis4.A > scores.axis4.B) ? 'H' : 'R' // ★修正: Fa -> R
     ].join('');
 
     // フォームを非表示にし、結果を表示
@@ -253,14 +233,15 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
 
     // 結果の取得
     const result = resultData[type] || resultData["DEFAULT"];
-    const weakness = weaknessData[type] || weaknessData["DEFAULT"]; // ★弱点を取得
+    // ★修正★ weakness を resultData から直接取得
+    const weakness = result.weakness; 
 
-    // ★修正: 結果の表示ロジックを全面的に変更
+    // 結果の表示
     
     // 1. タイプの表示
     resultEl.querySelector('#result-type-title').innerHTML = `(${type}) ${result.title}`;
     
-    // 2. 画像表示 (既存ロジックは流用)
+    // 2. 画像表示 
     const resultImage = resultEl.querySelector('#result-image');
     if (result.title !== "診断不能タイプ") {
         resultImage.src = REPO_PATH + 'images/kotowaza_buta_shinju.png';
@@ -291,7 +272,7 @@ document.getElementById('shindan-form').addEventListener('submit', function(even
 
     [desc1, desc2, desc3, desc4].forEach(desc => {
         if(desc) { 
-            // 4軸目の軸タイトルがRの場合、表示文字をRに修正
+            // 軸タイトルが R の場合、表示文字も R に修正
             const axisChar = desc.title.includes('(R)') ? 'R' : desc.title.match(/[A-Z]/)[0];
 
             breakdownEl.innerHTML += `
